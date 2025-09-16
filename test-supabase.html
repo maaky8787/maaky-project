@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار Supabase</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 اختبار اتصال Supabase</h1>
+        
+        <div class="test-section info">
+            <h3>📋 إعدادات الاتصال</h3>
+            <label>URL:</label>
+            <input type="text" id="supabaseUrl" value="https://nsczhgznmimejsxuzmow.supabase.co" placeholder="Supabase URL">
+            
+            <label>API Key:</label>
+            <input type="text" id="supabaseKey" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zY3poZ3pubWltZWpzeHV6bW93Iiwicm9sZSI6ImFub25fa2V5IiwiaWF0IjoxNzU0MTA0MjgxLCJleHAiOjIwNjk2ODAyODF9.nX2niEHbwGQOp49LJkPZ7G73Tc7UB_EO09SP3AHbbmk" placeholder="Supabase API Key">
+            
+            <button onclick="testConnection()">🔍 اختبار الاتصال</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 اختبار قاعدة البيانات</h3>
+            <button onclick="testProducts()">📦 جلب المنتجات</button>
+            <button onclick="createTestProduct()">➕ إضافة منتج تجريبي</button>
+            <button onclick="clearAllProducts()" style="background-color: #dc3545;">🗑️ حذف جميع المنتجات</button>
+            <button onclick="seedProducts()" style="background-color: #28a745;">🌱 إضافة منتجات تجريبية</button>
+            <br><br>
+            <button onclick="testOrders()">📋 جلب الطلبات</button>
+            <button onclick="createTestOrder()">🛒 إضافة طلب تجريبي</button>
+            
+            <div id="result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🗄️ إنشاء الجداول</h3>
+            <button onclick="createTables()">🏗️ إنشاء الجداول المطلوبة</button>
+            <div id="tableResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let supabase = null;
+
+        function getSupabaseClient() {
+            const url = document.getElementById('supabaseUrl').value;
+            const key = document.getElementById('supabaseKey').value;
+            
+            if (!url || !key) {
+                showResult('error', 'يرجى إدخال URL و API Key');
+                return null;
+            }
+
+            return window.supabase.createClient(url, key);
+        }
+
+        function showResult(type, message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = message;
+            resultDiv.style.display = 'block';
+        }
+
+        function showTableResult(type, message) {
+            const resultDiv = document.getElementById('tableResult');
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = message;
+            resultDiv.style.display = 'block';
+        }
+
+        async function testConnection() {
+            try {
+                supabase = getSupabaseClient();
+                if (!supabase) return;
+
+                showResult('info', 'جاري اختبار الاتصال...');
+                
+                // اختبار بسيط للاتصال
+                const { data, error } = await supabase
+                    .from('products')
+                    .select('*', { head: true, count: 'estimated' });
+
+                if (error) {
+                    showResult('error', `خطأ في الاتصال: ${error.message}\n\nالتفاصيل: ${JSON.stringify(error, null, 2)}`);
+                } else {
+                    showResult('success', '✅ تم الاتصال بنجاح! قاعدة البيانات متاحة.');
+                }
+            } catch (err) {
+                showResult('error', `خطأ في الاتصال: ${err.message}`);
+            }
+        }
+
+        async function testProducts() {
+            try {
+                supabase = getSupabaseClient();
+                if (!supabase) return;
+
+                showResult('info', 'جاري جلب المنتجات...');
+                
+                const { data, error } = await supabase
+                    .from('products')
+                    .select('*');
+
+                if (error) {
+                    showResult('error', `خطأ في جلب المنتجات: ${error.message}\n\nالتفاصيل: ${JSON.stringify(error, null, 2)}`);
+                } else {
+                    showResult('success', `✅ تم جلب ${data.length} منتج بنجاح!\n\nالمنتجات:\n${JSON.stringify(data, null, 2)}`);
+                }
+            } catch (err) {
+                showResult('error', `خطأ في جلب المنتجات: ${err.message}`);
+            }
+        }
+
+        async function createTestProduct() {
+            try {
+                supabase = getSupabaseClient();
+                if (!supabase) return;
+
+                showResult('info', 'جاري إضافة منتج تجريبي...');
+                
+                const testProduct = {
+                    name: 'منتج تجريبي',
+                    description: 'هذا منتج تجريبي لاختبار قاعدة البيانات',
+                    price: 100,
+                    category: 'اختبار',
+                    image_url: 'https://via.placeholder.com/400x400',
+                    is_featured: false
+                };
+
+                const { data, error } = await supabase
+                    .from('products')
+                    .insert(testProduct)
+                    .select();
+
+                if (error) {
+                    showResult('error', `خطأ في إضافة المنتج: ${error.message}\n\nالتفاصيل: ${JSON.stringify(error, null, 2)}`);
+                } else {
+                    showResult('success', `✅ تم إضافة المنتج بنجاح!\n\nالمنتج المضاف:\n${JSON.stringify(data[0], null, 2)}`);
+                }
+            } catch (err) {
+                showResult('error', `خطأ في إضافة المنتج: ${err.message}`);
+            }
+        }
+
+        async function testOrders() {
+            try {
+                supabase = getSupabaseClient();
+                if (!supabase) return;
+
+                showResult('info', 'جاري جلب الطلبات...');
+                
+                const { data, error } = await supabase
+                    .from('orders')
+                    .select('*');
+
+                if (error) {
+                    showResult('error', `خطأ في جلب الطلبات: ${error.message}\n\nالتفاصيل: ${JSON.stringify(error, null, 2)}`);
+                } else {
+                    showResult('success', `✅ تم جلب ${data.length} طلب بنجاح!\n\nالطلبات:\n${JSON.stringify(data, null, 2)}`);
+                }
+            } catch (err) {
+                showResult('error', `خطأ في جلب الطلبات: ${err.message}`);
+            }
+        }
+
+        async function createTestOrder() {
+            try {
+                supabase = getSupabaseClient();
+                if (!supabase) return;
+
+                showResult('info', 'جاري إضافة طلب تجريبي...');
+                
+                const testOrder = {
+                    customer: {
+                        name: 'عميل تجريبي',
+                        email: 'test@example.com',
+                        phone: '01234567890',
+                        address: 'عنوان تجريبي'
+                    },
+                    items: [{
+                        product: {
+                            id: 1,
+                            name: 'منتج تجريبي',
+                            price: 100
+                        },
+                        quantity: 2
+                    }],
+                    total: 200,
+                    status: 'قيد المراجعة',
+                    created_at: new Date().toISOString()
+                };
+
+                const { data, error } = await supabase
+                    .from('orders')
+                    .insert(testOrder)
+                    .select();
+
+                if (error) {
+                    showResult('error', `خطأ في إضافة الطلب: ${error.message}\n\nالتفاصيل: ${JSON.stringify(error, null, 2)}`);
+                } else {
+                    showResult('success', `✅ تم إضافة الطلب بنجاح!\n\nالطلب المضاف:\n${JSON.stringify(data[0], null, 2)}`);
+                }
+            } catch (err) {
+                showResult('error', `خطأ في إضافة الطلب: ${err.message}`);
+            }
+        }
+
+        async function clearAllProducts() {
+            try {
+                supabase = getSupabaseClient();
+                if (!supabase) return;
+
+                if (!confirm('هل أنت متأكد من حذف جميع المنتجات؟\n\nهذا الإجراء لا يمكن التراجع عنه!')) {
+                    return;
+                }
+
+                showResult('info', 'جاري حذف جميع المنتجات...');
+                
+                const { error } = await supabase
+                    .from('products')
+                    .delete()
+                    .neq('id', 0);
+
+                if (error) {
+                    showResult('error', `خطأ في حذف المنتجات: ${error.message}\n\nالتفاصيل: ${JSON.stringify(error, null, 2)}`);
+                } else {
+                    showResult('success', '✅ تم حذف جميع المنتجات بنجاح!');
+                }
+            } catch (err) {
+                showResult('error', `خطأ في حذف المنتجات: ${err.message}`);
+            }
+        }
+
+        async function seedProducts() {
+            try {
+                supabase = getSupabaseClient();
+                if (!supabase) return;
+
+                showResult('info', 'جاري إضافة المنتجات التجريبية...');
+                
+                const testProducts = [
+                    {
+                        name: 'قميص رجالي أنيق',
+                        description: 'قميص قطني عالي الجودة بتصميم عصري وأنيق',
+                        price: 150,
+                        category: 'قمصان',
+                        image_url: 'https://images.unsplash.com/photo-1594938298605-cd64d190e6bc?w=400&h=400&fit=crop',
+                        is_featured: true,
+                    },
+                    {
+                        name: 'بنطلون جينز كلاسيكي',
+                        description: 'بنطلون جينز أزرق بتصميم كلاسيكي ومريح',
+                        price: 200,
+                        category: 'بناطيل',
+                        image_url: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=400&fit=crop',
+                        is_featured: true,
+                    },
+                    {
+                        name: 'حذاء رياضي مريح',
+                        description: 'حذاء رياضي عالي الجودة للمشي والرياضة',
+                        price: 300,
+                        category: 'أحذية',
+                        image_url: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop',
+                        is_featured: false,
+                    }
+                ];
+
+                const { data, error } = await supabase
+                    .from('products')
+                    .insert(testProducts)
+                    .select();
+
+                if (error) {
+                    showResult('error', `خطأ في إضافة المنتجات: ${error.message}\n\nالتفاصيل: ${JSON.stringify(error, null, 2)}`);
+                } else {
+                    showResult('success', `✅ تم إضافة ${data.length} منتج بنجاح!\n\nالمنتجات المضافة:\n${JSON.stringify(data, null, 2)}`);
+                }
+            } catch (err) {
+                showResult('error', `خطأ في إضافة المنتجات: ${err.message}`);
+            }
+        }
+
+        async function createTables() {
+            showTableResult('info', 'لإنشاء الجداول، يرجى استخدام SQL Editor في لوحة تحكم Supabase:\n\n1. اذهب إلى https://supabase.com/dashboard\n2. اختر مشروعك\n3. اذهب إلى SQL Editor\n4. انسخ والصق الكود التالي:\n\n-- جدول المنتجات\nCREATE TABLE IF NOT EXISTS products (\n    id SERIAL PRIMARY KEY,\n    name TEXT NOT NULL,\n    description TEXT,\n    price DECIMAL(10,2) NOT NULL,\n    category TEXT,\n    image_url TEXT,\n    is_featured BOOLEAN DEFAULT false,\n    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()\n);\n\n-- جدول الطلبات\nCREATE TABLE IF NOT EXISTS orders (\n    id SERIAL PRIMARY KEY,\n    customer JSONB NOT NULL,\n    items JSONB NOT NULL,\n    total DECIMAL(10,2) NOT NULL,\n    status TEXT NOT NULL,\n    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()\n);\n\n-- إضافة فهارس\nCREATE INDEX IF NOT EXISTS idx_products_category ON products(category);\nCREATE INDEX IF NOT EXISTS idx_products_featured ON products(is_featured);\nCREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);\nCREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at);');
+        }
+
+        // تحميل تلقائي عند فتح الصفحة
+        window.onload = function() {
+            showResult('info', 'مرحباً! استخدم الأزرار أعلاه لاختبار اتصال Supabase.\n\nتأكد من أن المفاتيح صحيحة قبل البدء.');
+        };
+    </script>
+</body>
+</html>
