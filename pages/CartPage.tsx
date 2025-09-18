@@ -42,27 +42,27 @@ const CartPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 md:p-8">
-      <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">سلة التسوق</h1>
+    <div className="container mx-auto p-4 sm:p-6 md:p-8">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center text-gray-800">سلة التسوق</h1>
       {cartItems.length === 0 ? (
         <p className="text-center text-gray-700">سلة التسوق فارغة.</p>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">المنتجات</h2>
-            <div className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+          <div className="lg:col-span-2 bg-white p-4 sm:p-6 rounded-lg shadow-md">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4">المنتجات</h2>
+            <div className="space-y-3 sm:space-y-4">
               {cartItems.map(item => (
                 <CartItem key={item.product.id} item={item} />
               ))}
             </div>
-            <div className="mt-6 pt-4 border-t text-left">
-              <h3 className="text-2xl font-bold">
+            <div className="mt-4 sm:mt-6 pt-4 border-t text-left">
+              <h3 className="text-xl sm:text-2xl font-bold">
                 الإجمالي: <span className="text-gray-900">{total.toFixed(2)} {settings.currency}</span>
               </h3>
             </div>
           </div>
-          <div className="lg:col-span-1 bg-white p-6 rounded-lg shadow-md h-fit">
-            <h2 className="text-xl font-semibold mb-4">معلومات الدفع</h2>
+          <div className="lg:col-span-1 bg-white p-4 sm:p-6 rounded-lg shadow-md h-fit">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4">معلومات الدفع</h2>
             <CheckoutForm onSubmit={handleCheckout} isSubmitting={isSubmitting}/>
             {error && <p className="text-red-500 text-sm mt-4 text-center">{error}</p>}
           </div>

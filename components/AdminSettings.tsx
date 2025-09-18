@@ -146,27 +146,7 @@ const AdminSettings: React.FC = () => {
 
             <hr className="my-6" />
 
-            <div className="space-y-3">
-                <h3 className="text-lg font-semibold text-gray-800">إنشاء بيانات تجريبية</h3>
-                <p className="text-sm text-gray-600">إنشاء منتجات تجريبية في قاعدة البيانات للاختبار. سيتم حذف المنتجات الموجودة واستبدالها بمنتجات تجريبية.</p>
-                <div className="flex items-center space-x-4">
-                    <button
-                        type="button"
-                        onClick={handleSeedData}
-                        disabled={seedStatus === 'seeding'}
-                        className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
-                    >
-                        {seedStatus === 'seeding' ? 'جاري الإنشاء...' : 'إنشاء بيانات تجريبية'}
-                    </button>
-                    {seedStatus === 'success' && (
-                        <p className="text-green-600 text-sm font-medium">✅ تم إنشاء البيانات التجريبية بنجاح!</p>
-                    )}
-                    {seedStatus === 'error' && (
-                        <p className="text-red-600 text-sm font-medium">❌ فشل في إنشاء البيانات التجريبية!</p>
-                    )}
-                </div>
-                <p className="text-xs text-gray-500">⚠️ تحذير: سيتم حذف جميع المنتجات الموجودة</p>
-            </div>
+
         </div>
     );
 };

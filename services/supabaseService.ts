@@ -23,6 +23,7 @@ const mockProducts: Product[] = [
     category: 'قمصان',
     image_url: 'https://images.unsplash.com/photo-1594938298605-cd64d190e6bc?w=400&h=400&fit=crop',
     is_featured: true,
+    available_sizes: ['S', 'M', 'L', 'XL', 'XXL'],
   },
   {
     id: 2,
@@ -32,6 +33,7 @@ const mockProducts: Product[] = [
     category: 'بناطيل',
     image_url: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=400&fit=crop',
     is_featured: true,
+    available_sizes: ['28', '30', '32', '34', '36', '38'],
   },
   {
     id: 3,
@@ -41,6 +43,7 @@ const mockProducts: Product[] = [
     category: 'أحذية',
     image_url: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop',
     is_featured: false,
+    available_sizes: ['38', '39', '40', '41', '42', '43', '44', '45'],
   },
   {
     id: 4,
@@ -50,6 +53,7 @@ const mockProducts: Product[] = [
     category: 'جاكيتات',
     image_url: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop',
     is_featured: false,
+    available_sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
   },
   {
     id: 5,
@@ -59,6 +63,7 @@ const mockProducts: Product[] = [
     category: 'قمصان',
     image_url: 'https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=400&h=400&fit=crop',
     is_featured: false,
+    available_sizes: ['S', 'M', 'L', 'XL'],
   },
   {
     id: 6,
@@ -68,6 +73,7 @@ const mockProducts: Product[] = [
     category: 'بناطيل',
     image_url: 'https://images.unsplash.com/photo-1506629905607-9b4a4b4b4b4b?w=400&h=400&fit=crop',
     is_featured: true,
+    available_sizes: ['28', '30', '32', '34', '36'],
   },
 ];
 

@@ -76,20 +76,20 @@ const HomePage: React.FC = () => {
           {/* خلفية ديكورية */}
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-pink-600/10"></div>
           
-          <div className="relative z-10 p-4 md:p-8">
+          <div className="relative z-10 p-4 sm:p-6 md:p-8">
             {/* عنوان القسم */}
-            <div className="text-center mb-8">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            <div className="text-center mb-6 sm:mb-8">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2 sm:mb-4">
                 منتجاتنا المميزة
               </h2>
-              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto px-4">
                 اكتشف أحدث وأفضل المنتجات المختارة بعناية من أجلك
               </p>
             </div>
 
             {/* منطقة المنتجات المميزة */}
             <div 
-              className="relative w-full h-[70vh] max-w-7xl mx-auto rounded-3xl overflow-hidden shadow-2xl"
+              className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] max-w-7xl mx-auto rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl"
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
@@ -110,9 +110,9 @@ const HomePage: React.FC = () => {
                     onClick={() => setCurrentFeaturedIndex(prev => 
                       prev === 0 ? featuredProducts.length - 1 : prev - 1
                     )}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-all duration-300 z-20"
+                    className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white p-2 sm:p-3 rounded-full hover:bg-white/30 transition-all duration-300 z-20"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
                   </button>
@@ -122,9 +122,9 @@ const HomePage: React.FC = () => {
                     onClick={() => setCurrentFeaturedIndex(prev => 
                       prev === featuredProducts.length - 1 ? 0 : prev + 1
                     )}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-all duration-300 z-20"
+                    className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white p-2 sm:p-3 rounded-full hover:bg-white/30 transition-all duration-300 z-20"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
@@ -152,16 +152,16 @@ const HomePage: React.FC = () => {
         </section>
       )}
 
-      <div className="container mx-auto p-4 md:p-8">
-        <section className="mt-8">
-          <h2 className="text-3xl font-bold mb-8 text-gray-800">جميع المنتجات</h2>
+      <div className="container mx-auto p-4 sm:p-6 md:p-8">
+        <section className="mt-6 sm:mt-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gray-800 text-center sm:text-right">جميع المنتجات</h2>
           
-          <div className="mb-8 flex flex-wrap gap-3">
+          <div className="mb-6 sm:mb-8 flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start">
               {categories.map(category => (
                   <button 
                       key={category}
                       onClick={() => setSelectedCategory(category)}
-                      className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                      className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors ${
                           selectedCategory === category
                           ? 'bg-gray-900 text-white shadow'
                           : 'bg-gray-300 text-gray-800 hover:bg-gray-400'
@@ -172,7 +172,7 @@ const HomePage: React.FC = () => {
               ))}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 md:gap-8">
             {filteredProducts.map(product => (
               <ProductCard key={product.id} product={product} onCardClick={handleProductClick} />
             ))}
