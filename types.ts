@@ -6,11 +6,13 @@ export interface Product {
   category: string;
   image_url: string;
   is_featured: boolean;
+  available_sizes?: string[]; // الأحجام المتاحة للملابس
 }
 
 export interface CartItem {
   product: Product;
   quantity: number;
+  selectedSize?: string; // الحجم المختار للملابس
 }
 
 export interface Customer {

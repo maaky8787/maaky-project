@@ -15,14 +15,24 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product, onClos
     const { settings } = useStoreSettings();
     const [quantity, setQuantity] = useState(1);
     const [isAdding, setIsAdding] = useState(false);
+    const [selectedSize, setSelectedSize] = useState<string>('');
+    
+    // الأحجام المتاحة للملابس
+    const availableSizes = product.available_sizes || ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
     const handleAddToCart = async () => {
+        // التحقق من اختيار الحجم للملابس
+        if (product.category === 'ملابس' && !selectedSize) {
+            alert('يرجى اختيار الحجم');
+            return;
+        }
+        
         setIsAdding(true);
         // محاكاة تأخير قصير للتفاعل
         await new Promise(resolve => setTimeout(resolve, 300));
         
         for (let i = 0; i < quantity; i++) {
-            addToCart(product);
+            addToCart(product, selectedSize);
         }
         
         setIsAdding(false);
@@ -130,6 +140,33 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product, onClos
                                     </button>
                                 </div>
                             </div>
+
+                            {/* اختيار الحجم للملابس */}
+                            {product.category === 'ملابس' && (
+                                <div className="space-y-3">
+                                    <span className="text-lg font-semibold text-white drop-shadow-md">اختر الحجم:</span>
+                                    <div className="flex flex-wrap gap-2">
+                                        {availableSizes.map((size) => (
+                                            <button
+                                                key={size}
+                                                onClick={() => setSelectedSize(size)}
+                                                className={`px-4 py-2 rounded-full font-semibold transition-all duration-200 ${
+                                                    selectedSize === size
+                                                        ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg transform scale-105'
+                                                        : 'bg-white/20 text-white hover:bg-white/30 hover:scale-105'
+                                                }`}
+                                            >
+                                                {size}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    {selectedSize && (
+                                        <div className="text-sm text-green-300 drop-shadow-md">
+                                            ✓ تم اختيار الحجم: {selectedSize}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
 
                             {/* زر الإضافة للسلة مع تباين قوي */}
                             <button

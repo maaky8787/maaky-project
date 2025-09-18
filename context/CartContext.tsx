@@ -4,7 +4,7 @@ import { Product, CartItem } from '../types';
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: Product) => void;
+  addToCart: (product: Product, selectedSize?: string) => void;
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
   clearCart: () => void;
@@ -20,17 +20,23 @@ interface CartProviderProps {
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: Product, selectedSize?: string) => {
     setCartItems(prevItems => {
-      const existingItem = prevItems.find(item => item.product.id === product.id);
+      // البحث عن عنصر موجود بنفس المنتج والحجم
+      const existingItem = prevItems.find(item => 
+        item.product.id === product.id && item.selectedSize === selectedSize
+      );
+      
       if (existingItem) {
         return prevItems.map(item =>
-          item.product.id === product.id
+          item.product.id === product.id && item.selectedSize === selectedSize
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       }
-      return [...prevItems, { product, quantity: 1 }];
+      
+      // إضافة عنصر جديد مع الحجم المختار
+      return [...prevItems, { product, quantity: 1, selectedSize }];
     });
   };
 

@@ -19,6 +19,9 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
         <div>
           <h4 className="font-semibold">{item.product.name}</h4>
           <p className="text-gray-600 text-sm">{item.product.price.toFixed(2)} {settings.currency}</p>
+          {item.selectedSize && (
+            <p className="text-blue-600 text-sm font-medium">الحجم: {item.selectedSize}</p>
+          )}
         </div>
       </div>
       <div className="flex items-center space-x-4">
